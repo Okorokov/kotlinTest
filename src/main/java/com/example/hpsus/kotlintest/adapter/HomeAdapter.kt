@@ -37,9 +37,10 @@ class HomeAdapter(internal var activity: Context,var homeList:ArrayList<mHome>) 
             intent.putExtra(HOME_COL_DEVELOPERNAME,homeList[position].developerName.toString());
             activity.startActivity(intent)
         }
-
         return view
     }
+
+
 
     override fun getItem(position: Int): Any {
         return homeList[position]
@@ -52,4 +53,13 @@ class HomeAdapter(internal var activity: Context,var homeList:ArrayList<mHome>) 
     override fun getCount(): Int {
         return homeList.size
     }
+ /*   private class ViewHolder(view: View?) {
+        val tvHome: TextView
+
+
+        init {
+            this.tvHome = view?.findViewById(R.id.tvHome) as TextView
+
+        }
+    }*/
 }

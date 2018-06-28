@@ -7,9 +7,4 @@
     <string name="tvfloorsName">этажность:</string>
     <string name="tvdeveloperName">название застройщика:</string>
     <string name="tvNoText">отсутствует</string>
-
-    <string name="tvAindiApartmentName">идентификатор квартиры: </string>
-    <string name="tvAindiHomeName">идентификатор дома:</string>
-    <string name="tvAfloorName">этаж: </string>
-    <string name="tvAareaName">площадь, м2: </string>
 </resources>

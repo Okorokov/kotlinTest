@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import com.example.hpsus.kotlintest.model.mHome
 import com.example.hpsus.kotlintest.sqlite.HOME_COL_DEVELOPERNAME
@@ -62,30 +63,26 @@ class InfoActivity : AppCompatActivity() {
         return true
     }
     fun showDialog() {
-val li = LayoutInflater.from(this)
-val promptsView = li.inflate(R.layout.dialog_info, null)
-val mDialogBuilder = AlertDialog.Builder(this)
-mDialogBuilder.setView(promptsView)
-        var tvindiHomeText=promptsView.findViewById(R.id.tvindiHomeText) as EditText
-        val tvnameHomeText=promptsView.findViewById(R.id.tvnameHomeText) as EditText
-        val tvfloorsText=promptsView.findViewById(R.id.tvfloorsText) as EditText
-        val tvdeveloperText=promptsView.findViewById(R.id.tvdeveloperText) as EditText
+        val li = LayoutInflater.from(this)
+        val promptsView = li.inflate(R.layout.dialog_info, null)
+        val mDialogBuilder = AlertDialog.Builder(this)
+        mDialogBuilder.setView(promptsView)
+        var tvindiHomeText=promptsView.findViewById(R.id.tvindiHomeText) as TextView
+        var tvnameHomeText=promptsView.findViewById(R.id.tvnameHomeText) as TextView
+        var tvfloorsText=promptsView.findViewById(R.id.tvfloorsText) as TextView
+        var tvdeveloperText=promptsView.findViewById(R.id.tvdeveloperText) as TextView
 
-        tvindiHomeText.setText(mHomeIA.indiHome)
-        tvnameHomeText.setText(mHomeIA.nameHome)
-        tvfloorsText.setText(mHomeIA.floors)
-        tvdeveloperText.setText(mHomeIA.developerName)
+        tvindiHomeText.text=mHomeIA.indiHome.toString()
+        tvnameHomeText.text=mHomeIA.nameHome.toString()
+        tvfloorsText.text=mHomeIA.floors.toString()
+        tvdeveloperText.text=mHomeIA.developerName.toString()
 
-mDialogBuilder
-.setCancelable(false)
-        .setPositiveButton("ОК"){dialog, which ->}
-
-
- //Создаем AlertDialog:
-        val alertDialog = mDialogBuilder.create()
-
- //и отображаем его:
-        alertDialog.show()
+        mDialogBuilder.setCancelable(false)
+        mDialogBuilder.setNegativeButton("OK"){dialog,which ->
+            dialog.cancel()
+        }
+        val dialog: AlertDialog = mDialogBuilder.create()
+        dialog.show()
 
 }
 }

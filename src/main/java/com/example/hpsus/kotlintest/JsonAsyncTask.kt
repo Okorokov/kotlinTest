@@ -3,12 +3,15 @@ package com.example.hpsus.kotlintest
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
+import android.content.SharedPreferences
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.os.AsyncTask
+import android.os.Environment
 import android.util.Log
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import com.example.hpsus.kotlintest.adapter.HomeAdapter
 import com.example.hpsus.kotlintest.datajson.Apartment
 import com.example.hpsus.kotlintest.datajson.Data
@@ -18,7 +21,10 @@ import com.example.hpsus.kotlintest.model.mHome
 import com.example.hpsus.kotlintest.sqlite.*
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
+import java.io.FileInputStream
 import java.io.InputStream
+import java.nio.channels.FileChannel
 import java.nio.charset.Charset
 
 
@@ -31,16 +37,17 @@ class JsonAsyncTask(val stream:InputStream,val context: Context, val lvHome: Lis
     lateinit var mData: Data
     var dbHelper: DatabaseHelper = DatabaseHelper(context)
     var database: SQLiteDatabase = dbHelper.writableDatabase
-    //var adapter:HomeAdapter = HomeAdapter(context,ArrayList<mHome>())
+    val mPreference=Preference(context)
+
 
     override fun doInBackground(vararg params: Void?): Void? {
         Log.d(Tag,"doInBackground")
-        Log.d(Tag,"database.version "+database.version)
-        //database.version=2
-        dbHelper.onUpgrade(database,database.version,database.version+1)
-        Log.d(Tag,"database.version "+database.version)
         parseJson()
-        saveDB()
+         var vers=mPreference.getVers()
+        if ((mData.vers!=vers)||(vers==-1)){
+            saveDB()
+            mPreference.setVers(mData.vers)
+        }
         readDB()
         return null
     }
@@ -48,6 +55,7 @@ class JsonAsyncTask(val stream:InputStream,val context: Context, val lvHome: Lis
         dbHomes=dbHelper.readHome()
     }
     private fun saveDB() {
+        dbHelper.onUpgrade(database,database.version,database.version+1)
         mHomes.forEach {
             var cvHome = ContentValues()
             cvHome.put(HOME_COL_INDIHOME, it.indiHome)
@@ -55,11 +63,7 @@ class JsonAsyncTask(val stream:InputStream,val context: Context, val lvHome: Lis
             cvHome.put(HOME_COL_FLOORS, it.floors)
             cvHome.put(HOME_COL_DEVELOPERNAME, it.developerName)
             database.insert(TABLE_NAME_HOME,null,cvHome)
-
         }
-
-
-
         mApartments.forEach {
             var cvApartments = ContentValues()
             cvApartments.put(APARTMENT_COL_INDIAPARTMENT, it.indiApartment)
@@ -115,7 +119,21 @@ class JsonAsyncTask(val stream:InputStream,val context: Context, val lvHome: Lis
         )
     }
     private fun readFile(): String {
-        var jsonString = stream.readBytes().toString(Charset.defaultCharset())
+        val fil = Environment.getExternalStorageDirectory().toString()
+        val file= File(fil,"document.json")
+        Log.d(Tag,"file "+file.path)
+        val st=FileInputStream(file)
+        var jsonString=""
+        st.use { st ->
+            val fileChannel = st.channel
+            val mappedBuffer = fileChannel.map(
+                    FileChannel.MapMode.READ_ONLY,
+                    0,
+                    fileChannel.size()
+            )
+            jsonString= Charset.defaultCharset().decode(mappedBuffer).toString()
+        }
+        //var jsonString = stream.readBytes().toString(Charset.defaultCharset())
         //Log.d(Tag,jsonString)
         return jsonString
     }
@@ -124,6 +142,7 @@ class JsonAsyncTask(val stream:InputStream,val context: Context, val lvHome: Lis
         Log.d(Tag,"onPostExecute")
         var adapter = HomeAdapter(context,dbHomes)
         lvHome.adapter=adapter
+
     }
 
     override fun onPreExecute() {

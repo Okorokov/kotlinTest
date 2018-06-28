@@ -1,5 +1,6 @@
 package com.example.hpsus.kotlintest.sqlite
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
@@ -93,9 +94,25 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DB_NAME, null,
                 mApartment.floor=cursor.getInt(cursor.getColumnIndex(APARTMENT_COL_FLOOR))
                 mApartment.area=cursor.getDouble(cursor.getColumnIndex(APARTMENT_COL_AREA))
                 mApartment.visible=cursor.getInt(cursor.getColumnIndex(APARTMENT_COL_VISIBLE))
-                apartmentList.add(mApartment)
+                if(mApartment.visible!=1){
+                    apartmentList.add(mApartment)
+                }
+
             }while(cursor.moveToNext())
         }
         return apartmentList
+    }
+
+    override fun onDowngrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+
+        db!!.version=newVersion
+    }
+
+    fun writeApartment(indiApartment: String){
+        val db:SQLiteDatabase = this.writableDatabase
+        var cvApartments = ContentValues()
+        cvApartments.put(APARTMENT_COL_VISIBLE, 1)
+        db.update(TABLE_NAME_APARTMENT,cvApartments,APARTMENT_COL_INDIAPARTMENT+"="+indiApartment,null)
+        //db.insert(TABLE_NAME_APARTMENT,null,cvApartments)
     }
 }

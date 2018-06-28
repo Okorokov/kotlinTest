@@ -37,6 +37,7 @@ class HomeAdapter(internal var activity: Context,var homeList:ArrayList<mHome>) 
             intent.putExtra(HOME_COL_DEVELOPERNAME,homeList[position].developerName.toString());
             activity.startActivity(intent)
         }
+
         return view
     }
 

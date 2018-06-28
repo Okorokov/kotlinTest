@@ -1,26 +1,20 @@
 package com.example.hpsus.kotlintest
 
 import android.app.AlertDialog
-import android.content.ContentValues
-import android.content.DialogInterface
-import android.database.sqlite.SQLiteDatabase
-import android.database.sqlite.SQLiteException
+import android.nfc.Tag
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.EditText
+import android.widget.AdapterView
 import android.widget.TextView
-import android.widget.Toast
 import com.example.hpsus.kotlintest.adapter.ApartmentAdapter
-import com.example.hpsus.kotlintest.adapter.HomeAdapter
 import com.example.hpsus.kotlintest.model.mApartment
 import com.example.hpsus.kotlintest.model.mHome
 import com.example.hpsus.kotlintest.sqlite.*
 import kotlinx.android.synthetic.main.activity_info.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 class InfoActivity : AppCompatActivity() {
@@ -46,8 +40,11 @@ class InfoActivity : AppCompatActivity() {
         mHomeIA.developerName=intent.getStringExtra(HOME_COL_DEVELOPERNAME)
 
         dbApartments=dbHelper.readApartment(mHomeIA.indiHome.toString())
-        var adapter = ApartmentAdapter(this,dbApartments)
+        Log.d(Tag, "dbApartments dbApartments dbApartments")
+                var adapter = ApartmentAdapter(this,dbApartments)
         lvApartment.adapter=adapter
+
+
     }
 
     override fun onBackPressed() {
@@ -69,7 +66,7 @@ class InfoActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
+        menuInflater.inflate(R.menu.menu_info, menu)
         return true
     }
     fun showDialog() {
@@ -88,12 +85,16 @@ class InfoActivity : AppCompatActivity() {
         tvdeveloperText.text=mHomeIA.developerName.toString()
 
         mDialogBuilder.setCancelable(false)
-        mDialogBuilder.setNegativeButton("OK"){dialog,which ->
+        mDialogBuilder.setPositiveButton("OK"){dialog,which ->
             dialog.cancel()
         }
         val dialog: AlertDialog = mDialogBuilder.create()
         dialog.show()
     }
 }
-
+/*
+private fun AdapterView.OnItemLongClickListener.onItemLongClick() {
+    Log.d("InfoActivity", "onItemLongClick")
+}
+*/
 

@@ -3,6 +3,7 @@ package com.example.hpsus.kotlintest
 import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.DialogInterface
+import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -13,11 +14,12 @@ import android.view.MenuItem
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.example.hpsus.kotlintest.adapter.ApartmentAdapter
+import com.example.hpsus.kotlintest.adapter.HomeAdapter
+import com.example.hpsus.kotlintest.model.mApartment
 import com.example.hpsus.kotlintest.model.mHome
-import com.example.hpsus.kotlintest.sqlite.HOME_COL_DEVELOPERNAME
-import com.example.hpsus.kotlintest.sqlite.HOME_COL_FLOORS
-import com.example.hpsus.kotlintest.sqlite.HOME_COL_INDIHOME
-import com.example.hpsus.kotlintest.sqlite.HOME_COL_NAMEHOME
+import com.example.hpsus.kotlintest.sqlite.*
+import kotlinx.android.synthetic.main.activity_info.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -25,6 +27,10 @@ class InfoActivity : AppCompatActivity() {
     val Tag: String = "InfoActivity"
     var mHomeIA:mHome=mHome()
     var prHomeIA:mHome=mHome()
+    var dbApartments= ArrayList<mApartment>()
+    var dbHelper: DatabaseHelper = DatabaseHelper(this)
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_info)
@@ -38,6 +44,10 @@ class InfoActivity : AppCompatActivity() {
         mHomeIA.nameHome=intent.getStringExtra(HOME_COL_NAMEHOME)
         mHomeIA.floors=intent.getIntExtra(HOME_COL_FLOORS,0)
         mHomeIA.developerName=intent.getStringExtra(HOME_COL_DEVELOPERNAME)
+
+        dbApartments=dbHelper.readApartment(mHomeIA.indiHome.toString())
+        var adapter = ApartmentAdapter(this,dbApartments)
+        lvApartment.adapter=adapter
     }
 
     override fun onBackPressed() {
@@ -83,8 +93,7 @@ class InfoActivity : AppCompatActivity() {
         }
         val dialog: AlertDialog = mDialogBuilder.create()
         dialog.show()
-
-}
+    }
 }
 
 

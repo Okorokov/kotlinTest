@@ -27,7 +27,7 @@ class JsonAsyncTask(val stream:InputStream,val context: Context, val lvHome: Lis
     var mHomes= ArrayList<Home>()
     var mApartments= ArrayList<Apartment>()
     var dbHomes= ArrayList<mHome>()
-    var dbApartments= ArrayList<mApartment>()
+    //var dbApartments= ArrayList<mApartment>()
     lateinit var mData: Data
     var dbHelper: DatabaseHelper = DatabaseHelper(context)
     var database: SQLiteDatabase = dbHelper.writableDatabase
@@ -88,7 +88,7 @@ class JsonAsyncTask(val stream:InputStream,val context: Context, val lvHome: Lis
                     jsonArray.getJSONArray(x).getInt(0),
                     jsonArray.getJSONArray(x).getInt(1),
                     jsonArray.getJSONArray(x).getInt(2),
-                    jsonArray.getJSONArray(x).getString(3).toFloat()
+                    jsonArray.getJSONArray(x).getString(3).toDouble()
             ))
             x++
         }

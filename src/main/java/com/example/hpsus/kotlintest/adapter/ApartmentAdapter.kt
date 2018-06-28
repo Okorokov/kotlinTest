@@ -15,9 +15,10 @@ import com.example.hpsus.kotlintest.R
 import com.example.hpsus.kotlintest.model.mApartment
 import com.example.hpsus.kotlintest.model.mHome
 import com.example.hpsus.kotlintest.sqlite.*
+import kotlinx.android.synthetic.main.item_apartment.view.*
 import kotlinx.android.synthetic.main.item_home.view.*
 
-class HomeAdapter(internal var activity: Context,var homeList:ArrayList<mHome>) : BaseAdapter() {
+class ApartmentAdapter(internal var activity: Context, var apartmentList:ArrayList<mApartment>) : BaseAdapter() {
 
     internal var inflater: LayoutInflater
     init{
@@ -26,22 +27,16 @@ class HomeAdapter(internal var activity: Context,var homeList:ArrayList<mHome>) 
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view: View
-        view=inflater.inflate(R.layout.item_home,null)
-        view.tvHome.text=homeList[position].nameHome.toString()
-
-        view.setOnClickListener {
-            val intent=  Intent(activity, InfoActivity::class.java)
-            intent.putExtra(HOME_COL_INDIHOME,homeList[position].indiHome);
-            intent.putExtra(HOME_COL_NAMEHOME,homeList[position].nameHome.toString());
-            intent.putExtra(HOME_COL_FLOORS,homeList[position].floors);
-            intent.putExtra(HOME_COL_DEVELOPERNAME,homeList[position].developerName.toString());
-            activity.startActivity(intent)
-        }
+        view=inflater.inflate(R.layout.item_apartment,null)
+        view.tvAindiApartmentText.text=apartmentList[position].indiApartment.toString()
+        view.tvAindiHomeText.text=apartmentList[position].indiHome.toString()
+        view.tvAfloorText.text=apartmentList[position].floor.toString()
+        view.tvAareaText.text= String.format("%.1f",apartmentList[position].area)
         return view
     }
 
     override fun getItem(position: Int): Any {
-        return homeList[position]
+        return apartmentList[position]
     }
 
     override fun getItemId(position: Int): Long {
@@ -49,6 +44,6 @@ class HomeAdapter(internal var activity: Context,var homeList:ArrayList<mHome>) 
     }
 
     override fun getCount(): Int {
-        return homeList.size
+        return apartmentList.size
     }
 }

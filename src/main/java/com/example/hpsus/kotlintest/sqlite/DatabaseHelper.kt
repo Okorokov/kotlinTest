@@ -4,6 +4,8 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
+import com.example.hpsus.kotlintest.model.mApartment
 import com.example.hpsus.kotlintest.model.mHome
 
 var context: Context? = null
@@ -29,6 +31,7 @@ val APARTMENT_COL_VISIBLE = "visible"
 
 class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
 
+    val Tag: String = "DatabaseHelper"
 
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL("create table " + TABLE_NAME_HOME + "("
@@ -73,5 +76,26 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DB_NAME, null,
         }
         return homeList
     }
+    fun readApartment(indiHome: String): ArrayList<mApartment> {
+        val apartmentList = ArrayList<mApartment>()
+        val selectQuery = "SELECT * FROM $TABLE_NAME_APARTMENT WHERE $APARTMENT_COL_INDIHOME LIKE $indiHome"
+        Log.d(Tag,"selectQuery "+selectQuery)
+        val db:SQLiteDatabase = this.writableDatabase
+        val cursor: Cursor = db.rawQuery(selectQuery,null)
+        Log.d(Tag,"cursor.count "+cursor.count)
 
+       if(cursor.moveToFirst()){
+            do {
+                val mApartment=mApartment()
+                mApartment.idApartment=cursor.getInt(cursor.getColumnIndex(APARTMENT_COL_ID))
+                mApartment.indiApartment=cursor.getInt(cursor.getColumnIndex(APARTMENT_COL_INDIAPARTMENT))
+                mApartment.indiHome=cursor.getInt(cursor.getColumnIndex(APARTMENT_COL_INDIHOME))
+                mApartment.floor=cursor.getInt(cursor.getColumnIndex(APARTMENT_COL_FLOOR))
+                mApartment.area=cursor.getDouble(cursor.getColumnIndex(APARTMENT_COL_AREA))
+                mApartment.visible=cursor.getInt(cursor.getColumnIndex(APARTMENT_COL_VISIBLE))
+                apartmentList.add(mApartment)
+            }while(cursor.moveToNext())
+        }
+        return apartmentList
+    }
 }

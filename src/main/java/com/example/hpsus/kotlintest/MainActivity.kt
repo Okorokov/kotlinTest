@@ -21,7 +21,5 @@ class MainActivity : AppCompatActivity() {
             JsonAsyncTask(assets.open(DOCUMENT_NAME),this,lvHome).execute()
         }
     }
-  /*  fun onClickbtnReadJson(view: MainActivity){
-        //JsonAsyncTask(tvResult).execute()
-    }*/
+
 }
